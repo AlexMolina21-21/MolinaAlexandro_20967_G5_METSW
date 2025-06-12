@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Administrador</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    .item {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    input {
+      margin: 5px 0;
+      padding: 5px;
+    }
+    #adminPanel {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Formulario de acceso -->
+  <div id="loginForm">
+    <h2>Acceso al Panel de Administrador</h2>
+    <input type="text" id="usuario" placeholder="Usuario"><br>
+    <input type="password" id="contrasena" placeholder="Contraseña"><br>
+    <button onclick="verificarAcceso()">Ingresar</button>
+    <p id="mensaje" style="color:red;"></p>
+  </div>
+
+  <!-- Contenido protegido del panel -->
+  <div id="adminPanel">
+    <h2>Inventario</h2>
+    <div id="listaInventario">Cargando...</div>
+
+    <hr>
+
+    <h2>Agregar nuevo producto</h2>
+    <form id="formProducto">
+      <input type="text" id="nombre" placeholder="Nombre del producto" required><br>
+      <input type="number" id="precio" placeholder="Precio" required><br>
+      <input type="number" id="stock" placeholder="Stock inicial" required><br>
+      <button type="submit">Agregar producto</button>
+    </form>
+    
+    <h2>Clientes registrados</h2>
+    <div id="listaClientes">Cargando...</div>
+    <hr>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" src="admin.js"></script>
+
+  <script>
+    const usuarioCorrecto = "Admin1";
+    const contrasenaCorrecta = "1206m";
+    let intentosFallidos = 0;
+    let bloqueado = false;
+
+    function verificarAcceso() {
+      const usuario = document.getElementById("usuario").value;
+      const contrasena = document.getElementById("contrasena").value;
+      const mensaje = document.getElementById("mensaje");
+
+      if (bloqueado) {
+        mensaje.textContent = "Acceso bloqueado. Espera 30 segundos.";
+        return;
+      }
+
+      if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        intentosFallidos++;
+        if (intentosFallidos >= 3) {
+          mensaje.textContent = "Demasiados intentos. Espera 30 segundos.";
+          bloqueado = true;
+          setTimeout(() => {
+            bloqueado = false;
+            intentosFallidos = 0;
+            mensaje.textContent = "";
+          }, 30000);
+        } else {
+          mensaje.textContent = `Usuario o contraseña incorrectos. Intento ${intentosFallidos} de 3.`;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso Administrador</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Panel de Administrador</h2>
+    <form id="loginForm">
+        <input type="text" id="usuario" placeholder="Usuario" required>
+        <input type="password" id="contrasena" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <script>
+        const USUARIO = "admin";
+        const CONTRASENA = "1234";
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const usuario = document.getElementById('usuario').value;
+            const contrasena = document.getElementById('contrasena').value;
+
+            if (usuario === USUARIO && contrasena === CONTRASENA) {
+                localStorage.setItem('adminLogueado', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                alert("Credenciales incorrectas");
+            }
+        });
+    </script>
+</body>
+</html>

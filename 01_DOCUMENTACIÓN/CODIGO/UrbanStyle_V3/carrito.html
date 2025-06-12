@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Urban Style Shop - Carrito</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=AVJDAp3ZsmhvzuCmE-FuLFaaWkjW-wvFKjUy8TcSnZFvU9K8zVAa2xgxI0ctqL_7UIBaQLaGHdzsbwal&currency=USD"></script>
+</head>
+<body>
+    <header>
+        <h1>Tu Carrito</h1>
+        <nav>
+            <a href="index.html">🏠 Seguir Comprando</a>
+        </nav>
+    </header>
+
+    <div id="mensaje"></div>
+
+    <section id="carrito"></section>
+
+    <h2>Datos del Cliente</h2>
+    <input type="text" id="nombreCliente" placeholder="Nombre completo"><br>
+    <input type="email" id="emailCliente" placeholder="Correo electrónico"><br>
+    <button onclick="guardarCompra()">Finalizar compra</button>
+    <button onclick="limpiarCarrito()">Vaciar carrito</button>
+
+    <h2>Pago seguro con PayPal</h2>
+    <div id="paypal-button-container"></div>
+
+     <!-- SweetAlert2 debe ir aquí -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Urban Style Shop - Hombre</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Urban Style Shop</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="hombre.html">Hombre</a>
+      <a href="mujer.html">Mujer</a>
+      <a href="niños.html">Niños</a>
+      <a href="carrito.html">🛒 Ver Carrito</a>
+    </nav>
+  </header>
+
+  <!-- Mensaje flotante -->
+  <div id="mensaje"></div>
+
+  <!-- Contenedor de productos -->
+  <section id="productos"></section>
+
+  <!-- Controles de paginación -->
+  <div id="paginacion" style="text-align: center; margin-top: 20px;">
+    <button id="anterior">⏪ Anterior</button>
+    <span id="paginaActual">1</span>
+    <button id="siguiente">Siguiente ⏩</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs
+    } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    import { agregarAlCarrito } from './carrito.js';
+
+    const firebaseConfig = {
+      // 🟡 Usa aquí tu configuración de Firebase
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const productosRef = collection(db, "productos");
+    const contenedor = document.getElementById("productos");
+
+    const CATEGORIA = "hombre"; // Cambiar según archivo
+
+    let productosFiltrados = [];
+    let pagina = 1;
+    const porPagina = 9;
+
+    async function cargarProductos() {
+      const querySnapshot = await getDocs(productosRef);
+      productosFiltrados = [];
+
+      querySnapshot.forEach((doc) => {
+        const producto = doc.data();
+        if (producto.categoria === CATEGORIA) {
+          productosFiltrados.push(producto);
+        }
+      });
+
+      mostrarPagina(pagina);
+    }
+
+    function mostrarPagina(pag) {
+      contenedor.innerHTML = "";
+      const inicio = (pag - 1) * porPagina;
+      const fin = inicio + porPagina;
+      const productosPagina = productosFiltrados.slice(inicio, fin);
+
+      productosPagina.forEach((producto) => {
+        const div = document.createElement("div");
+        div.className = "producto";
+        div.innerHTML = `
+          <img src="${producto.imagen}" alt="${producto.nombre}">
+          <h3>${producto.nombre}</h3>
+          <p>$${producto.precio}</p>
+          <button onclick="agregarAlCarrito('${producto.nombre}', ${producto.precio})">
+            Agregar al carrito
+          </button>
+        `;
+        contenedor.appendChild(div);
+      });
+
+      document.getElementById("paginaActual").innerText = pag;
+    }
+
+    document.getElementById("anterior").addEventListener("click", () => {
+      if (pagina > 1) {
+        pagina--;
+        mostrarPagina(pagina);
+      }
+    });
+
+    document.getElementById("siguiente").addEventListener("click", () => {
+      const totalPaginas = Math.ceil(productosFiltrados.length / porPagina);
+      if (pagina < totalPaginas) {
+        pagina++;
+        mostrarPagina(pagina);
+      }
+    });
+
+    cargarProductos();
+  </script>
+</body>
+</html>
